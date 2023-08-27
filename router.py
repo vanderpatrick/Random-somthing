@@ -133,3 +133,27 @@ def update_bill(bill: Bills, bill_id: int):
     db.refresh(bill_to_update)
 
     return bill_to_update
+
+
+@router.delete('/bill/{bill_id}', response_model=Bills, status_code=status.HTTP_200_OK)
+def delete_bill(bill_id: int):
+    bill_to_delete = db.query(models.Bills).filter(models.Bills.id == bill_id).first()
+    if not bill_to_delete:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="not found dummy")
+
+    db.delete(bill_to_delete)
+    db.commit()
+
+    return bill_to_delete
+
+
+@router.delete('/user/{user_id', response_model=User, status_code=status.HTTP_200_OK)
+def delete_user(user_id: int):
+    user_to_be_deleted = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user_to_be_deleted:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    db.delete(user_to_be_deleted)
+    db.commit()
+
+    return user_to_be_deleted
