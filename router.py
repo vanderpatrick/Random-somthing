@@ -20,15 +20,20 @@ class User(BaseModel):
 
 
 # serialize Bills model
-class Bills(BaseModel):
-    id: int
+
+class BillCreate(BaseModel):
     user_bill_id: int
     bill_name: str
     bill_category: str
     bill_cost: int
 
+
+class Bills(BillCreate):
+    id: int
+
     class Config:
         orm_mode = True
+
 
 # Instantiate default router
 @router.get("/")
@@ -95,15 +100,8 @@ def get_all_bills():
 
 
 @router.post("/bills/create", status_code=status.HTTP_201_CREATED)
-def create_bill(bill: Bills):
-    existing_bill = db.query(models.Bills).filter(models.Bills.id == bill.id).first()
-    if existing_bill:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Bill with the same ID already exists",
-        )
-
-        # Create a new bill
+def create_bill(bill: BillCreate):
+    # Create a new bill
     new_bill = models.Bills(**bill.dict())
     db.add(new_bill)
     db.commit()

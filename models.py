@@ -20,8 +20,8 @@ class User(Base):
 class Bills(Base):
     __tablename__ = "bills"
 
-    id = sa.Column(sa.Integer, primary_key=True)
-    user_bill_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"))
+    id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    user_bill_id = sa.Column(sa.Integer, sa.ForeignKey("users.id"), nullable=True)
     bill_name = sa.Column(sa.String)
     bill_category = sa.Column(sa.String)
     bill_cost = sa.Column(sa.Integer)
