@@ -13,27 +13,12 @@ class User(BaseModel):
     name: str
     is_patrick: bool
     balance: int
-    male: bool
 
     class Config:
         orm_mode = True
 
 
 # serialize Bills model
-
-class BillCreate(BaseModel):
-    user_bill_id: int
-    bill_name: str
-    bill_category: str
-    bill_cost: int
-
-
-class Bills(BillCreate):
-    id: int
-
-    class Config:
-        orm_mode = True
-
 
 # Instantiate default router
 @router.get("/")
@@ -50,108 +35,49 @@ def get_user():
 
 
 @router.post("/users/create", status_code=status.HTTP_201_CREATED)
-def create_user(user: User):
-    # Check if the user already exists
+def create_user(user: User)-> dict:
     existing_user = db.query(models.User).filter(models.User.id == user.id).first()
-
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="User already exists"
         )
-
-    # Create a new user
-    new_user = models.User(**user.dict())
+    # create new user
+    new_user = models.User(**user.dict(exclude={"id"}))
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-
     return new_user
-
-
 # Route to edit user in db
-@router.put("/users/{user_id}", response_model=User, status_code=status.HTTP_200_OK)
-def edit_user(user_id: int, user: User):
-    user_to_update = db.query(models.User).filter(models.User.id == user_id).first()
-    if not user_to_update:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
-    update_data = {
-        "name": user.name,
-        "is_patrick": user.is_patrick,
-        "balance": user.balance,
-        "male": user.male,
-    }
-    for field, value in update_data.items():
-        setattr(user_to_update, field, value)
-    db.commit()
-    db.refresh(user_to_update)
-
-    return user_to_update
-
-
-# Get all bills, we might have different kinds of bill from temp to fixed bills
-@router.get("/bills", response_model=list[Bills], status_code=status.HTTP_200_OK)
-def get_all_bills():
-    bills = db.query(models.Bills).all()
-    if not bills:
-        raise HTTPException(status_code=404, detail="No bills found")
-    return bills
+# @router.put("/users/{user_id}", response_model=User, status_code=status.HTTP_200_OK)
+# def edit_user(user_id: int, user: User):
+#     user_to_update = db.query(models.User).filter(models.User.id == user_id).first()
+#     if not user_to_update:
+#         raise HTTPException(
+#             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+#         )
+#     update_data = {
+#         "name": user.name,
+#         "is_patrick": user.is_patrick,
+#         "balance": user.balance,
+#         "male": user.male,
+#     }
+#     for field, value in update_data.items():
+#         setattr(user_to_update, field, value)
+#     db.commit()
+#     db.refresh(user_to_update)
+#
+#     return user_to_update
 
 
-@router.post("/bills/create", status_code=status.HTTP_201_CREATED)
-def create_bill(bill: BillCreate):
-    # Create a new bill
-    new_bill = models.Bills(**bill.dict())
-    db.add(new_bill)
-    db.commit()
-    db.refresh(new_bill)
-    return new_bill
 
-
-@router.put("/bills/bill_id", response_model=Bills, status_code=status.HTTP_200_OK)
-def update_bill(bill: Bills, bill_id: int):
-    bill_to_update = db.query(models.Bills).filter(models.Bills.id == bill_id).first()
-
-    if not bill_to_update:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Bill not found")
-
-    # Update the bill fields
-    update_data = {
-        "bill_name": bill.bill_name,
-        "user_bill_id": bill.user_bill_id,
-        "bill_category": bill.bill_category,
-        "bill_cost": bill.bill_cost,
-    }
-
-    for field, value in update_data.items():
-        setattr(bill_to_update, field, value)
-
-    db.commit()
-    db.refresh(bill_to_update)
-
-    return bill_to_update
-
-
-@router.delete('/bill/{bill_id}', response_model=Bills, status_code=status.HTTP_200_OK)
-def delete_bill(bill_id: int):
-    bill_to_delete = db.query(models.Bills).filter(models.Bills.id == bill_id).first()
-    if not bill_to_delete:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="not found dummy")
-
-    db.delete(bill_to_delete)
-    db.commit()
-
-    return bill_to_delete
-
-
-@router.delete('/user/{user_id', response_model=User, status_code=status.HTTP_200_OK)
-def delete_user(user_id: int):
-    user_to_be_deleted = db.query(models.User).filter(models.User.id == user_id).first()
-    if not user_to_be_deleted:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
-    db.delete(user_to_be_deleted)
-    db.commit()
-
-    return user_to_be_deleted
+#
+# @router.delete('/user/{user_id', response_model=User, status_code=status.HTTP_200_OK)
+# def delete_user(user_id: int):
+#     user_to_be_deleted = db.query(models.User).filter(models.User.id == user_id).first()
+#     if not user_to_be_deleted:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+#
+#     db.delete(user_to_be_deleted)
+#     db.commit()
+#
+#     return user_to_be_deleted
