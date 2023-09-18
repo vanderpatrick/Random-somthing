@@ -1,29 +1,12 @@
-import './App.css'
-import {useState, useEffect} from "react"
-import axios from 'axios';
-
-
-interface UserData {
-  id: number
-  name:string
-  is_patrick: boolean
-  balance: number
-}
+import './App.css';
+import useFetchData from "./components/FetchAPI.tsx";
 
 function App() {
-  useEffect(() => {
-  axios.get('http://127.0.0.1:8000/')
-    .then((response) => {
-      // Axios automatically parses JSON responses
-      console.log(response.data);
-    })
-    .catch((error) => {
-      console.error('Error fetching data:', error);
-    });
-}, []);
+  useFetchData('http://127.0.0.1:8000/');
+
   return (
-      <p>starting here </p>
-  )
+    <p>starting here </p>
+  );
 }
 
-export default App
+export default App;
