@@ -31,8 +31,8 @@ def saving(validated_liquid_cash: Decimal, percentage: Decimal) -> Decimal:
 
 
 # allowance function
-def allowance() -> Decimal:
-    pass
+def allowance(x: Decimal, y: Decimal) -> Decimal:
+    return x - y
 
 
 def main():
@@ -42,7 +42,7 @@ def main():
     amount_to_savings = input_validation(
         saving(month_liquid_money, current_savings_percentage)
     )
-    test = allowance()
+    test = allowance(month_liquid_money, amount_to_savings)
     print(f"{my_salary = }")
     print(f"{my_total_bills = }")
     print(f"{month_liquid_money = }")
