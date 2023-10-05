@@ -31,8 +31,8 @@ def saving(validated_liquid_cash: Decimal, percentage: Decimal) -> Decimal:
 
 
 # allowance function
-def allowance(x: Decimal, y: Decimal) -> Decimal:
-    return x - y
+def allowance(liquid_mont_cash: Decimal, current_saving_cash: Decimal) -> Decimal:
+    return liquid_mont_cash - current_saving_cash
 
 
 def main():
@@ -46,6 +46,7 @@ def main():
     print(f"{my_salary = }")
     print(f"{my_total_bills = }")
     print(f"{month_liquid_money = }")
+    print(month_liquid_money - amount_to_savings)
     print(f"{amount_to_savings =}")
     print(test)
 
