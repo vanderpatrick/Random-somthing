@@ -43,3 +43,6 @@ class Validation:
         cls, formatted_current_day_percent: Decimal, allowence: Decimal
     ) -> Decimal:
         return formatted_current_day_percent * allowence
+
+
+    # Next method is to add to savings what was not expended no fucking idea how that will work but im drunk now
